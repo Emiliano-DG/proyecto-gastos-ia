@@ -1,0 +1,18 @@
+# dependencias
+node_modules/
+
+# archivos de entorno
+.env
+
+# whatsapp-web.js (si lo usaste antes)
+.wwebjs_auth/
+.wwebjs_cache/
+
+# logs
+*.log
+
+# sistema
+.DS_Store
+
+dist/
+build/
