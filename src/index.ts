@@ -3,12 +3,13 @@ const { Client, LocalAuth } = pkg
 import type { Message } from 'whatsapp-web.js'
 import qrcode from 'qrcode-terminal'
 import 'dotenv/config'
+import { procesarMensaje } from './lib/gemini.js'
 
 // Inicializamos el cliente de WhatsApp
 const client = new Client({
   authStrategy: new LocalAuth(), // Esto evita tener que escanear el QR cada vez
   puppeteer: {
-    args: ['--no-sandbox'],
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
   },
 })
 
@@ -20,15 +21,28 @@ client.on('qr', (qr: string) => {
 
 // Confirmación de conexión
 client.on('ready', () => {
-  console.log('¡Bot de Gastos listo y conectado!')
+  console.log('✅ Bot de Gastos listo y conectado')
 })
 
 // Escuchar mensajes
 client.on('message', async (msg: Message) => {
-  // Por ahora, solo responde un "recibido" para probar
-  if (msg.body.toLowerCase().includes('hola')) {
-    msg.reply(
-      '¡Hola Emiliano! Soy tu asistente de finanzas. Mandame un gasto (ej: "1500 en pizza") y yo lo anoto.',
+  console.log(`📩 Mensaje recibido: "${msg.body}"`)
+
+  const fechaHoy = new Date().toISOString().split('T')[0] ?? '' // YYYY-MM-DD
+  const transaccion = await procesarMensaje(msg.body, fechaHoy)
+
+  if (transaccion) {
+    const emoji = transaccion.tipo === 'gasto' ? '💸' : '💰'
+    await msg.reply(
+      `${emoji} Registrado!\n` +
+        `💵  ${transaccion.monto}\n` +
+        `📝  ${transaccion.descripcion}\n` +
+        `🏷️ ${transaccion.categoria}\n` +
+        `📅 ${transaccion.fecha}`,
+    )
+  } else {
+    await msg.reply(
+      '❓ No entendí el gasto. Probá con algo como: "gasté $500 en pizza" o "cobré $50000 de sueldo"',
     )
   }
 })
