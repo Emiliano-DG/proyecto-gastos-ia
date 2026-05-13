@@ -4,6 +4,7 @@ import type { Message } from 'whatsapp-web.js'
 import qrcode from 'qrcode-terminal'
 import 'dotenv/config'
 import { procesarMensaje } from './lib/gemini.js'
+import { guardarTransaccion } from './lib/supabase.js'
 
 // Inicializamos el cliente de WhatsApp
 const client = new Client({
@@ -32,14 +33,22 @@ client.on('message', async (msg: Message) => {
   const transaccion = await procesarMensaje(msg.body, fechaHoy)
 
   if (transaccion) {
+    const guardado = await guardarTransaccion(transaccion, msg.from)
     const emoji = transaccion.tipo === 'gasto' ? '💸' : '💰'
-    await msg.reply(
-      `${emoji} Registrado!\n` +
-        `💵  ${transaccion.monto}\n` +
-        `📝  ${transaccion.descripcion}\n` +
-        `🏷️ ${transaccion.categoria}\n` +
-        `📅 ${transaccion.fecha}`,
-    )
+
+    if (guardado) {
+      await msg.reply(
+        `${emoji} Registrado!\n` +
+          `💵  ${transaccion.monto}\n` +
+          `📝  ${transaccion.descripcion}\n` +
+          `🏷️ ${transaccion.categoria}\n` +
+          `📅 ${transaccion.fecha}`,
+      )
+    } else {
+      await msg.reply(
+        '⚠️ Entendí el gasto pero hubo un error al guardarlo. Intentá de nuevo.',
+      )
+    }
   } else {
     await msg.reply(
       '❓ No entendí el gasto. Probá con algo como: "gasté $500 en pizza" o "cobré $50000 de sueldo"',
