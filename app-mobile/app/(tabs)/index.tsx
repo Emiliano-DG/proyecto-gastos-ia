@@ -1,31 +1,18 @@
-import GastoCard from '@/components/GastoCard'
-import { supabase } from '@/lib/supabase'
-import { Transaccion } from '@/types/transaccion'
-import { useEffect, useState } from 'react'
-import { ActivityIndicator, FlatList, Text, View } from 'react-native'
+import { ThemedText } from '@/components/ThemeText'
+import { ThemeView } from '@/components/ThemeView'
+import GastoCard from '@/components/TransaccionCard'
+import { useTransaccion } from '@/hooks/useTransaccion'
+import {
+  ActivityIndicator,
+  FlatList,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native'
 
 export default function HomeScreen() {
-  const [gastos, setGastos] = useState<Transaccion[]>([])
-  const [cargando, setCargando] = useState(true)
-
-  // Carga de datos al montar el componente
-  useEffect(() => {
-    async function cargarDatos() {
-      const { data, error } = await supabase
-        .from('transacciones')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(20)
-
-      if (error) {
-        console.error('Error al cargar transacciones:', error.message)
-      } else {
-        setGastos(data ?? [])
-      }
-      setCargando(false)
-    }
-    cargarDatos()
-  }, [])
+  const { transaccion, cargando, error, refrescarTransaccion } =
+    useTransaccion()
 
   // Mostrar indicador de carga mientras se obtienen los datos
   if (cargando) {
@@ -36,11 +23,34 @@ export default function HomeScreen() {
     )
   }
 
+  // 2. SI HAY ERROR: Mostramos una interfaz de error con opción a reintentar
+  if (error) {
+    return (
+      <View className="flex-1 justify-center items-center bg-[#13131f] px-6">
+        <Text className="text-3xl mb-2">⚠️</Text>
+        <Text className="text-white text-lg font-semibold text-center mb-2">
+          Ups, algo salió mal
+        </Text>
+        <Text className="text-gray-400 text-sm text-center mb-6">{error}</Text>
+
+        {/* Botón para volver a ejecutar cargarDatos() */}
+        <TouchableOpacity
+          onPress={refrescarTransaccion}
+          className="bg-[#4ade80] px-6 py-3 rounded-xl"
+        >
+          <Text className="text-[#13131f] font-bold">Volver a intentar</Text>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
   return (
-    <View className="flex-1  pt-16">
-      <Text className=" text-2xl font-bold ml-4 mb-4">Mis Movimientos 💸</Text>
+    <ThemeView className="flex-1  pt-16">
+      <ThemedText className=" text-2xl font-bold ml-4 mb-4">
+        Mis Movimientos 💸
+      </ThemedText>
       <FlatList
-        data={gastos}
+        data={transaccion}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => <GastoCard transaccion={item} />}
         ListEmptyComponent={
@@ -49,6 +59,6 @@ export default function HomeScreen() {
           </Text>
         }
       />
-    </View>
+    </ThemeView>
   )
 }
