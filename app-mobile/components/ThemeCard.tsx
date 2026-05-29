@@ -1,16 +1,23 @@
-import { useTheme } from '@/hooks/useThemeColor'
-import { View } from 'react-native'
+import { useTheme } from "@/hooks/useThemeColor";
+import { View } from "react-native";
 
 interface Props {
-  variant?: 'primary' | 'secondary'
-  style?: object
-  children: React.ReactNode
+  // variant?: "primary" | "secondary";
+  style?: object;
+  children?: React.ReactNode;
+  className?: string;
 }
 
-export function ThemedCard({ style, variant, ...props }: Props) {
-  const theme = useTheme()
+export function ThemedCard({ style, className, ...props }: Props) {
+  const theme = useTheme();
 
-  const background = variant === 'secondary' ? theme.cardSecondary : theme.card
+  const background = theme.card;
 
-  return <View {...props} style={[{ backgroundColor: background }, style]} />
+  return (
+    <View
+      {...props}
+      className={className}
+      style={[{ backgroundColor: background }, style]}
+    />
+  );
 }

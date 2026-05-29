@@ -1,18 +1,20 @@
-import { ThemedText } from '@/components/ThemeText'
-import { ThemeView } from '@/components/ThemeView'
-import GastoCard from '@/components/TransaccionCard'
-import { useTransaccion } from '@/hooks/useTransaccion'
+import { BalanceCard } from "@/components/BalanceCard";
+import { ThemedText } from "@/components/ThemeText";
+import { ThemeView } from "@/components/ThemeView";
+import TransaccionCard from "@/components/TransaccionCard";
+import { useTransaccion } from "@/hooks/useTransaccion";
 import {
   ActivityIndicator,
   FlatList,
   Text,
   TouchableOpacity,
   View,
-} from 'react-native'
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
   const { transaccion, cargando, error, refrescarTransaccion } =
-    useTransaccion()
+    useTransaccion();
 
   // Mostrar indicador de carga mientras se obtienen los datos
   if (cargando) {
@@ -20,7 +22,7 @@ export default function HomeScreen() {
       <View className="flex-1 justify-center items-center bg-[#13131f]">
         <ActivityIndicator size="large" color="#4ade80" />
       </View>
-    )
+    );
   }
 
   // 2. SI HAY ERROR: Mostramos una interfaz de error con opción a reintentar
@@ -41,24 +43,24 @@ export default function HomeScreen() {
           <Text className="text-[#13131f] font-bold">Volver a intentar</Text>
         </TouchableOpacity>
       </View>
-    )
+    );
   }
 
   return (
-    <ThemeView className="flex-1  pt-16">
-      <ThemedText className=" text-2xl font-bold ml-4 mb-4">
-        Mis Movimientos 💸
-      </ThemedText>
-      <FlatList
-        data={transaccion}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <GastoCard transaccion={item} />}
-        ListEmptyComponent={
-          <Text className="text-gray-500 text-center mt-10">
-            No hay movimientos todavía
-          </Text>
-        }
-      />
+    <ThemeView className="flex-1">
+      <SafeAreaView className="flex-1">
+        <FlatList
+          data={transaccion}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => <TransaccionCard transaccion={item} />}
+          ListHeaderComponent={<BalanceCard balance={2489.48} fecha="03/18" />}
+          ListEmptyComponent={
+            <Text className="text-gray-500 text-center mt-10">
+              No hay movimientos todavía
+            </Text>
+          }
+        />
+      </SafeAreaView>
     </ThemeView>
-  )
+  );
 }
