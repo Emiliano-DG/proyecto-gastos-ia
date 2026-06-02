@@ -1,30 +1,59 @@
-import { View, Text } from "react-native";
+import { useTheme } from '@/hooks/useThemeColor'
+import { View } from 'react-native'
+import { ThemedCard } from './ThemeCard'
+import { ThemedText } from './ThemeText'
 
-// components/BalanceCard.tsx
-type Props = {
-  balance: number;
-  fecha: string;
-};
+interface Props {
+  balance: number
+  ingresos?: number
+  egresos?: number
+}
 
-export function BalanceCard({ balance, fecha }: Props) {
+export function BalanceCard({ balance, ingresos, egresos }: Props) {
+  const theme = useTheme()
+
   return (
-    <View
-      className="mx-5 mt-5 mb-10 p-6 h-48 justify-between"
-      style={{
-        backgroundColor: "#FD7B41",
-        borderTopRightRadius: 30,
-        borderBottomLeftRadius: 30,
-      }}
+    <ThemedCard
+      hasBorder
+      className="mx-5 mt-5 mb-10 p-6 h-40 justify-between rounded-2xl"
     >
       <View>
-        <Text className="text-white/80 text-lg font-medium">Balance</Text>
-        <Text className="text-white text-4xl font-bold mt-2">
-          ${balance.toFixed(2)}
-        </Text>
+        <ThemedText
+          variant="textSecondary"
+          className="text-xs font-semibold uppercase tracking-wider"
+        >
+          Balance Disponible
+        </ThemedText>
+        <ThemedText
+          variant="text"
+          className="text-3xl font-bold mt-2 tracking-tight"
+        >
+          ${balance.toLocaleString('es-AR', { minimumFractionDigits: 2 })}
+        </ThemedText>
       </View>
-      <View className="flex-row justify-end">
-        <Text className="text-white/60 font-semibold text-base">{fecha}</Text>
+
+      <View className="flex-row justify-between items-center">
+        {/* Un pequeño detalle: el punto azul de Twitter para dar el toque de color */}
+        <View className="flex-row  items-center gap-2 ">
+          <View
+            className="w-2 h-2 rounded-full"
+            style={{ backgroundColor: theme.income }}
+          />
+          <ThemedText variant="textSecondary" className="text-xs">
+            Ingresos: $
+            {ingresos?.toLocaleString('es-AR', { minimumFractionDigits: 2 })}
+          </ThemedText>
+
+          <View
+            className="w-2 h-2 rounded-full ml-8"
+            style={{ backgroundColor: theme.expense }}
+          />
+          <ThemedText variant="textSecondary" className="text-xs">
+            Egresos: $
+            {egresos?.toLocaleString('es-AR', { minimumFractionDigits: 2 })}
+          </ThemedText>
+        </View>
       </View>
-    </View>
-  );
+    </ThemedCard>
+  )
 }

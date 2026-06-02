@@ -1,8 +1,21 @@
 import { useTheme } from '@/hooks/useThemeColor'
 import { Text, TextProps } from 'react-native'
 
-export function ThemedText(props: TextProps) {
+interface Props extends TextProps {
+  variant?: 'text' | 'textSecondary'
+}
+
+export function ThemedText({ variant = 'text', style, ...props }: Props) {
   const theme = useTheme()
 
-  return <Text {...props} style={[{ color: theme.text }, props.style]} />
+  const textColor = theme[variant]
+
+  return (
+    <Text
+      numberOfLines={1}
+      ellipsizeMode="tail"
+      {...props}
+      style={[{ color: textColor }, style]}
+    />
+  )
 }
