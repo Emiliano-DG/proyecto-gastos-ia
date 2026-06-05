@@ -19,10 +19,14 @@
     "@supabase/supabase-js": "^2.105.4",
     "@whiskeysockets/baileys": "^7.0.0-rc13",
     "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "qrcode": "^1.5.4",
     "qrcode-terminal": "^0.12.0"
   },
   "devDependencies": {
+    "@types/express": "^5.0.6",
     "@types/node": "^25.6.2",
+    "@types/qrcode": "^1.5.6",
     "@types/qrcode-terminal": "^0.12.2",
     "ts-node": "^10.9.2",
     "tsx": "^4.21.0",
