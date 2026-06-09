@@ -1,52 +1,57 @@
-import FontAwesome from '@expo/vector-icons/FontAwesome'
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 
-import { useFonts } from 'expo-font'
-import { Stack } from 'expo-router'
-import * as SplashScreen from 'expo-splash-screen'
-import { useEffect } from 'react'
-import 'react-native-reanimated'
-import '../global.css'
+import { useFonts } from "expo-font";
+import { Stack } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
+import { useEffect } from "react";
+import "react-native-reanimated";
+import "../global.css";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 // si una pantalla rompe, se mostrará el error en lugar de la pantalla rota
-export { ErrorBoundary } from 'expo-router'
+export { ErrorBoundary } from "expo-router";
 
 // Pantalla inicial de la aplicación
 export const unstable_settings = {
-  initialRouteName: '(tabs)',
-}
+  initialRouteName: "(tabs)",
+};
 
 // prevenir que la pantalla de carga se oculte automáticamente antes de que las fuentes estén cargadas
-SplashScreen.preventAutoHideAsync()
+SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
     ...FontAwesome.font,
-  })
+  });
 
   // si hay un error al cargar las fuentes, lanza el error para que se muestre en la pantalla de error
   useEffect(() => {
-    if (error) throw error
-  }, [error])
+    if (error) throw error;
+  }, [error]);
 
   // cuando las fuentes estén cargadas, oculta la pantalla de carga
   useEffect(() => {
     if (loaded) {
-      SplashScreen.hideAsync()
+      SplashScreen.hideAsync();
     }
-  }, [loaded])
+  }, [loaded]);
 
   if (!loaded) {
-    return null
+    return null;
   }
 
-  return <RootLayoutNav />
+  return <RootLayoutNav />;
 }
+
+const queryClient = new QueryClient();
 
 function RootLayoutNav() {
   return (
-    <Stack>
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-    </Stack>
-  )
+    <QueryClientProvider client={queryClient}>
+      <Stack>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      </Stack>
+    </QueryClientProvider>
+  );
 }

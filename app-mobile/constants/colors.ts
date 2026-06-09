@@ -1,5 +1,5 @@
 const tintColorLight = '#1D9BF0' // El azul clásico y limpio de Twitter
-const tintColorDark = '#1D9BF0' // El mismo azul, resalta perfecto sobre negro
+const tintColorDark = '#007BA7' // El mismo azul, resalta perfecto sobre negro
 
 export const Colors = {
   light: {
@@ -33,7 +33,7 @@ export const Colors = {
     surface: '#16181C', // El gris oscuro exacto de las tarjetas y buscador de Twitter
     card: '#16181C',
 
-    primary: '#1D9BF0',
+    primary: '#007BA7',
     secondary: '#F7F9F9', // Blanco/Gris claro para contrastes secundarios
     tabBar: '#000000', // Barra negra que se funde con el fondo
 

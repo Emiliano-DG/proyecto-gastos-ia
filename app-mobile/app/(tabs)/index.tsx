@@ -13,14 +13,18 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 export default function HomeScreen() {
-  const { transaccion, cargando, error, refrescarTransaccion } =
-    useTransaccion()
+  const {
+    data: transaccion,
+    isLoading: cargando,
+    error,
+    refetch: refrescarTransaccion,
+  } = useTransaccion()
 
   // Mostrar indicador de carga mientras se obtienen los datos
   if (cargando) {
     return (
       <View className="flex-1 justify-center items-center bg-[#13131f]">
-        <ActivityIndicator size="large" color="#4ade80" />
+        <ActivityIndicator size="large" color="#1D9BF0" />
       </View>
     )
   }
@@ -38,7 +42,7 @@ export default function HomeScreen() {
         {/* Botón para volver a ejecutar cargarDatos() */}
         <TouchableOpacity
           onPress={refrescarTransaccion}
-          className="bg-[#4ade80] px-6 py-3 rounded-xl"
+          className="bg-[#1D9BF0] px-6 py-3 rounded-xl"
         >
           <Text className="text-[#13131f] font-bold">Volver a intentar</Text>
         </TouchableOpacity>
@@ -46,11 +50,13 @@ export default function HomeScreen() {
     )
   }
 
-  const { TransaccionBalance, ingresos, gastos } = calculateBalance(transaccion)
+  const { TransaccionBalance, ingresos, gastos } = calculateBalance(
+    transaccion ?? [],
+  )
 
   return (
     <ThemeView className="flex-1">
-      <SafeAreaView className="flex-1">
+      <SafeAreaView className="flex-1" edges={['top']}>
         <FlatList
           data={transaccion}
           keyExtractor={(item) => item.id}

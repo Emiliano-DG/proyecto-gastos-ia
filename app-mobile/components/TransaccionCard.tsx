@@ -16,6 +16,7 @@ const CATEGORIA_EMOJI: Record<string, string> = {
   freelance: '💻',
   venta: '🏷️',
   credito: '💳',
+  educacion: '📚',
   otros: '📦',
 }
 

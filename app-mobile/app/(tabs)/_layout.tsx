@@ -1,17 +1,11 @@
 import { useTheme } from '@/hooks/useThemeColor'
-import { FontAwesome6 } from '@expo/vector-icons' // Recomiendo FA6 para iconos más modernos
+import { FontAwesome6 } from '@expo/vector-icons'
 import { Tabs } from 'expo-router'
 import React from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 function TabBarIcon({ name, color }: { name: string; color: string }) {
-  return (
-    <FontAwesome6
-      name={name}
-      size={22} // Twitter usa iconos de tamaño moderado, muy sutiles
-      color={color}
-    />
-  )
+  return <FontAwesome6 name={name} size={22} color={color} />
 }
 
 export default function TabLayout() {
@@ -51,11 +45,11 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="analytics"
+        name="reports"
         options={{
-          title: 'Estadísticas',
+          title: 'Reportes',
           tabBarIcon: ({ color }) => (
-            <TabBarIcon name="chart-simple" color={color} />
+            <TabBarIcon name="file-invoice" color={color} />
           ),
         }}
       />
