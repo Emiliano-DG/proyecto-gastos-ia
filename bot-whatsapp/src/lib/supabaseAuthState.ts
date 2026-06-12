@@ -51,6 +51,43 @@ async function guardarDatos(registros: Array<{ id: string; valor: unknown }>) {
   }
 }
 
+// Limpia claves de sesión viejas para que la tabla no crezca sin control
+async function limpiarSessionVieja() {
+  try {
+    // 1. app-state-sync-key: mantener solo las últimas 5
+    const { data: syncKeys } = await supabase
+      .from('baileys_session')
+      .select('id')
+      .like('id', 'app-state-sync-key-%')
+      .order('updated_at', { ascending: false })
+
+    if (syncKeys && syncKeys.length > 5) {
+      const ids = syncKeys.slice(5).map((r) => r.id)
+      await borrarDatos(ids)
+      console.log(`🧹 Limpiadas ${ids.length} app-state-sync-keys viejas`)
+    }
+
+    // 2. El resto (session, sender-key, pre-key huérfanas) +60 días
+    const hace60Dias = new Date(
+      Date.now() - 60 * 24 * 60 * 60 * 1000,
+    ).toISOString()
+
+    const { data: viejos } = await supabase
+      .from('baileys_session')
+      .select('id')
+      .neq('id', 'creds')
+      .lt('updated_at', hace60Dias)
+
+    if (viejos && viejos.length > 0) {
+      const ids = viejos.map((r) => r.id)
+      await borrarDatos(ids)
+      console.log(`🧹 Limpiados ${ids.length} registros viejos (+60d)`)
+    }
+  } catch (e) {
+    console.error('🧹 Error en limpieza de sesión:', e)
+  }
+}
+
 // Borra varios datos de sesión de un tirón de Supabase
 async function borrarDatos(ids: string[]) {
   if (ids.length === 0) return
@@ -76,7 +113,9 @@ export async function useSupabaseAuthState() {
   let creds: AuthenticationCreds =
     (datos['creds'] as AuthenticationCreds) ?? initAuthCreds()
 
-  // agregá esta línea
+  // Dispará limpieza de claves viejas sin bloquear la conexión
+  limpiarSessionVieja()
+
   console.log(
     '🔑 Creds cargadas desde Supabase:',
     creds ? 'SÍ' : 'NO - creando nuevas',
