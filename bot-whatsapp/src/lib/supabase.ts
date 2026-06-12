@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import type { Transaccion } from '../types/transaccion.js'
 
-const supabase = createClient(
+export const supabase = createClient(
   process.env.SUPABASE_URL ?? '',
   process.env.SUPABASE_KEY ?? '',
 )
