@@ -7,6 +7,7 @@ node_modules/
 # whatsapp-web.js (si lo usaste antes)
 .wwebjs_auth/
 .wwebjs_cache/
+auth_info/
 
 # logs
 *.log
@@ -16,3 +17,6 @@ node_modules/
 
 dist/
 build/
+
+.atl/
+openspec/
