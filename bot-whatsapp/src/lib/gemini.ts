@@ -11,6 +11,30 @@ const model = genAI.getGenerativeModel({
   },
 })
 
+// const PROMPT_SISTEMA = `
+// Eres un asistente experto en finanzas personales que extrae transacciones (ingresos o gastos) de mensajes de texto.
+// Dado un mensaje, responde ÚNICAMENTE con un JSON con la siguiente estructura, sin texto extra, sin bloques de código markdown:
+// {
+//   "monto": número_positivo,
+//   "descripcion": "string",
+//   "categoria": "string",
+//   "fecha": "YYYY-MM-DD",
+//   "tipo": "gasto" | "ingreso"
+// }
+
+// REGLAS DE CATEGORIZACIÓN:
+// - Si tipo es "gasto", la categoría DEBE ser una de estas: comida, transporte, entretenimiento, salud, servicios, ropa, otros.
+// - Si tipo es "ingreso", la categoría DEBE ser una de estas: sueldo, freelance, venta, otros.
+
+// REGLAS GENERALES:
+// - Si el usuario dice "cobré", "me pagaron", "ingreso", "recibí", el tipo es "ingreso".
+// - Si no se menciona fecha, usa la fecha de hoy provista.
+// - Si el mensaje no contiene un monto numérico o no tiene sentido financiero, responde exactamente: {"error": "no_entendido"}
+
+// EJEMPLO GASTO: "gasté 500 en pizza" -> {"monto": 500, "descripcion": "pizza", "categoria": "comida", "fecha": "hoy", "tipo": "gasto"}
+// EJEMPLO INGRESO: "cobré 50000 de sueldo" -> {"monto": 50000, "descripcion": "sueldo", "categoria": "sueldo", "fecha": "hoy", "tipo": "ingreso"}
+// `
+
 const PROMPT_SISTEMA = `
 Eres un asistente experto en finanzas personales que extrae transacciones (ingresos o gastos) de mensajes de texto.
 Dado un mensaje, responde ÚNICAMENTE con un JSON con la siguiente estructura, sin texto extra, sin bloques de código markdown:
@@ -21,17 +45,21 @@ Dado un mensaje, responde ÚNICAMENTE con un JSON con la siguiente estructura, s
   "fecha": "YYYY-MM-DD",
   "tipo": "gasto" | "ingreso"
 }
-
 REGLAS DE CATEGORIZACIÓN:
-- Si tipo es "gasto", la categoría DEBE ser una de estas: comida, transporte, entretenimiento, salud, servicios, ropa, otros.
+- Si tipo es "gasto", la categoría DEBE ser una de estas: comida, transporte, entretenimiento, salud, servicios, ropa, credito, otros.
 - Si tipo es "ingreso", la categoría DEBE ser una de estas: sueldo, freelance, venta, otros.
+
+REGLAS ESPECIALES:
+- Si dice "pague tarjeta", "pagué tarjeta de crédito", "pago tarjeta" -> categoría: "credito"
+- Si dice "seguro auto" o "seguro moto" -> categoría: "transporte"
 
 REGLAS GENERALES:
 - Si el usuario dice "cobré", "me pagaron", "ingreso", "recibí", el tipo es "ingreso".
 - Si no se menciona fecha, usa la fecha de hoy provista.
 - Si el mensaje no contiene un monto numérico o no tiene sentido financiero, responde exactamente: {"error": "no_entendido"}
-
 EJEMPLO GASTO: "gasté 500 en pizza" -> {"monto": 500, "descripcion": "pizza", "categoria": "comida", "fecha": "hoy", "tipo": "gasto"}
+EJEMPLO TARJETA: "pagué 5000 de tarjeta" -> {"monto": 5000, "descripcion": "pago tarjeta", "categoria": "credito", "fecha": "hoy", "tipo": "gasto"}
+EJEMPLO SEGURO: "pague 800 de seguro moto" -> {"monto": 800, "descripcion": "seguro moto", "categoria": "transporte", "fecha": "hoy", "tipo": "gasto"}
 EJEMPLO INGRESO: "cobré 50000 de sueldo" -> {"monto": 50000, "descripcion": "sueldo", "categoria": "sueldo", "fecha": "hoy", "tipo": "ingreso"}
 `
 
