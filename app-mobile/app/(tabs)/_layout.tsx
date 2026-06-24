@@ -1,13 +1,18 @@
 import { useTheme } from '@/hooks/useThemeColor'
-import { FontAwesome6 } from '@expo/vector-icons'
+import Ionicons from '@expo/vector-icons/Ionicons'
 import { Tabs } from 'expo-router'
 import React from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-function TabBarIcon({ name, color }: { name: string; color: string }) {
-  return <FontAwesome6 name={name} size={22} color={color} />
+function TabBarIcon({
+  name,
+  color,
+}: {
+  name: keyof typeof Ionicons.glyphMap
+  color: string
+}) {
+  return <Ionicons name={name} size={22} color={color} />
 }
-
 export default function TabLayout() {
   const theme = useTheme()
   const insets = useSafeAreaInsets()
@@ -41,7 +46,9 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Inicio',
-          tabBarIcon: ({ color }) => <TabBarIcon name="house" color={color} />,
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="home-sharp" color={color} />
+          ),
         }}
       />
       <Tabs.Screen
@@ -49,7 +56,7 @@ export default function TabLayout() {
         options={{
           title: 'Reportes',
           tabBarIcon: ({ color }) => (
-            <TabBarIcon name="file-invoice" color={color} />
+            <TabBarIcon name="stats-chart-sharp" color={color} />
           ),
         }}
       />

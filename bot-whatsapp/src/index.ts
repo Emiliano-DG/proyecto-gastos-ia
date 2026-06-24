@@ -142,15 +142,18 @@ async function conectar() {
       const guardado = await guardarTransaccion(transaccion, jid)
       const emoji = transaccion.tipo === 'gasto' ? '💸' : '💰'
 
+      const tipoTexto =
+        transaccion.tipo === 'ingreso' ? '🟢 Ingreso' : '🔴 Gasto'
+
       if (guardado) {
         // Si se guardó bien, responde con el resumen de la transacción
         await sock.sendMessage(jid, {
-          text:
-            `${emoji} Registrado!\n` +
-            `💵  ${transaccion.monto}\n` +
-            `📝  ${transaccion.descripcion}\n` +
-            `🏷️ ${transaccion.categoria}\n` +
-            `📅 ${transaccion.fecha}`,
+          text: `${emoji} Registrado!
+            📊 ${tipoTexto}
+            💵 ${transaccion.monto}
+            📝 ${transaccion.descripcion}
+            🏷️ ${transaccion.categoria}
+            📅 ${transaccion.fecha}`,
         })
       } else {
         // Si hubo error al guardar en Supabase, avisa

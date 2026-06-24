@@ -1,23 +1,24 @@
-import { COLORES_CATEGORIA } from '@/constants/coloresCategorias'
+import { CATEGORIAS } from '@/constants/categorias'
 import { useTheme } from '@/hooks/useThemeColor'
 import { Transaccion } from '@/types/transaccion'
-import { Text, useColorScheme, View } from 'react-native'
+import Ionicons from '@expo/vector-icons/Ionicons'
+import { useColorScheme, View } from 'react-native'
 import { ThemedCard } from './ThemeCard'
 import { ThemedText } from './ThemeText'
 
-const CATEGORIA_EMOJI: Record<string, string> = {
-  comida: '🍕',
-  transporte: '🚗',
-  entretenimiento: '🎬',
-  salud: '💊',
-  servicios: '💡',
-  ropa: '👕',
-  sueldo: '💼',
-  freelance: '💻',
-  venta: '🏷️',
-  credito: '💳',
-  educacion: '📚',
-  otros: '📦',
+const CATEGORIA_ICONO: Record<string, keyof typeof Ionicons.glyphMap> = {
+  comida: 'restaurant-outline',
+  transporte: 'car-outline',
+  entretenimiento: 'film-outline',
+  salud: 'medical-outline',
+  servicios: 'flash-outline',
+  ropa: 'shirt-outline',
+  sueldo: 'briefcase-outline',
+  freelance: 'laptop-outline',
+  venta: 'pricetag-outline',
+  credito: 'card-outline',
+  educacion: 'school-outline',
+  otros: 'cube-outline',
 }
 
 interface Props {
@@ -27,20 +28,37 @@ interface Props {
 export default function TransaccionCard({ transaccion }: Props) {
   const theme = useTheme()
   const colorScheme = useColorScheme()
-  const emoji = CATEGORIA_EMOJI[transaccion.categoria] || '📦'
   const esIngreso = transaccion.tipo === 'ingreso'
 
-  const categoriaColor = COLORES_CATEGORIA[transaccion.categoria]
-  const cardBg = categoriaColor
-    ? colorScheme === 'dark'
-      ? categoriaColor.dark
-      : categoriaColor.light
-    : theme.card
+  const categoriaInfo = CATEGORIAS[transaccion.categoria] ?? CATEGORIAS.otros
 
   return (
-    <ThemedCard className="rounded-xl px-4 py-6 mx-4 my-1.5 flex-row items-center justify-between">
+    <ThemedCard
+      className="rounded-xl px-4 py-6 mx-4 my-1.5 flex-row items-center justify-between"
+      hasBorder
+      style={{
+        borderRadius: 18,
+      }}
+    >
       <View className="flex-row items-center gap-3">
-        <Text className="text-3xl">{emoji}</Text>
+        <View
+          style={{
+            width: 42,
+            height: 42,
+            borderRadius: 12,
+            backgroundColor: `${categoriaInfo.color}20`,
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderWidth: 1,
+            borderColor: theme.border,
+          }}
+        >
+          <Ionicons
+            name={categoriaInfo.icon}
+            size={20}
+            color={categoriaInfo.color}
+          />
+        </View>
         <View>
           <ThemedText className=" text-base font-semibold ">
             {transaccion.descripcion}
