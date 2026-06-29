@@ -40,7 +40,7 @@ export default function HomeScreen() {
         <Text className="text-white text-lg font-semibold text-center mb-2">
           Ups, algo salió mal
         </Text>
-        <Text className="text-gray-400 text-sm text-center mb-6">{error}</Text>
+        <Text className="text-gray-400 text-sm text-center mb-6">{error?.message || "Error inesperado"}</Text>
 
         {/* Botón para volver a ejecutar cargarDatos() */}
         <TouchableOpacity

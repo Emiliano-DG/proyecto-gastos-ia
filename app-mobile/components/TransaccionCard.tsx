@@ -1,36 +1,21 @@
-import { CATEGORIAS } from '@/constants/categorias'
-import { useTheme } from '@/hooks/useThemeColor'
-import { Transaccion } from '@/types/transaccion'
-import Ionicons from '@expo/vector-icons/Ionicons'
-import { useColorScheme, View } from 'react-native'
-import { ThemedCard } from './ThemeCard'
-import { ThemedText } from './ThemeText'
-
-const CATEGORIA_ICONO: Record<string, keyof typeof Ionicons.glyphMap> = {
-  comida: 'restaurant-outline',
-  transporte: 'car-outline',
-  entretenimiento: 'film-outline',
-  salud: 'medical-outline',
-  servicios: 'flash-outline',
-  ropa: 'shirt-outline',
-  sueldo: 'briefcase-outline',
-  freelance: 'laptop-outline',
-  venta: 'pricetag-outline',
-  credito: 'card-outline',
-  educacion: 'school-outline',
-  otros: 'cube-outline',
-}
+import { CATEGORIAS } from "@/constants/categorias";
+import { useTheme } from "@/hooks/useThemeColor";
+import { Transaccion } from "@/types/transaccion";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { useColorScheme, View } from "react-native";
+import { ThemedCard } from "./ThemeCard";
+import { ThemedText } from "./ThemeText";
 
 interface Props {
-  transaccion: Transaccion
+  transaccion: Transaccion;
 }
 
 export default function TransaccionCard({ transaccion }: Props) {
-  const theme = useTheme()
-  const colorScheme = useColorScheme()
-  const esIngreso = transaccion.tipo === 'ingreso'
+  const theme = useTheme();
+  const colorScheme = useColorScheme();
+  const esIngreso = transaccion.tipo === "ingreso";
 
-  const categoriaInfo = CATEGORIAS[transaccion.categoria] ?? CATEGORIAS.otros
+  const categoriaInfo = CATEGORIAS[transaccion.categoria] ?? CATEGORIAS.otros;
 
   return (
     <ThemedCard
@@ -47,8 +32,8 @@ export default function TransaccionCard({ transaccion }: Props) {
             height: 42,
             borderRadius: 12,
             backgroundColor: `${categoriaInfo.color}20`,
-            justifyContent: 'center',
-            alignItems: 'center',
+            justifyContent: "center",
+            alignItems: "center",
             borderWidth: 1,
             borderColor: theme.border,
           }}
@@ -75,8 +60,8 @@ export default function TransaccionCard({ transaccion }: Props) {
         className="text-base font-bold"
         style={{ color: esIngreso ? theme.income : theme.expense }}
       >
-        {esIngreso ? '+' : '-'}${transaccion.monto}
+        {esIngreso ? "+" : "-"}${transaccion.monto}
       </ThemedText>
     </ThemedCard>
-  )
+  );
 }

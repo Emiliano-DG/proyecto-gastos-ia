@@ -1,15 +1,15 @@
-import { GoogleGenerativeAI } from '@google/generative-ai'
-import type { Transaccion } from '../types/transaccion.js'
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import type { Transaccion } from "../types/transaccion.js";
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY ?? '')
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY ?? "");
 
 // Forzamos al modelo a devolver JSON estricto
 const model = genAI.getGenerativeModel({
-  model: 'gemini-2.5-flash',
+  model: "gemini-2.5-flash",
   generationConfig: {
-    responseMimeType: 'application/json',
+    responseMimeType: "application/json",
   },
-})
+});
 
 // const PROMPT_SISTEMA = `
 // Eres un asistente experto en finanzas personales que extrae transacciones (ingresos o gastos) de mensajes de texto.
@@ -23,8 +23,8 @@ const model = genAI.getGenerativeModel({
 // }
 
 // REGLAS DE CATEGORIZACIÓN:
-// - Si tipo es "gasto", la categoría DEBE ser una de estas: comida, transporte, entretenimiento, salud, servicios, ropa, otros.
-// - Si tipo es "ingreso", la categoría DEBE ser una de estas: sueldo, freelance, venta, otros.
+// - Si tipo es "gasto", la categoría DEBE ser una de estas: comida, transporte, entretenimiento, salud, servicios, ropa,ajuste, otros.
+// - Si tipo es "ingreso", la categoría DEBE ser una de estas: sueldo, freelance, venta,ajuste, otros.
 
 // REGLAS GENERALES:
 // - Si el usuario dice "cobré", "me pagaron", "ingreso", "recibí", el tipo es "ingreso".
@@ -61,61 +61,61 @@ EJEMPLO GASTO: "gasté 500 en pizza" -> {"monto": 500, "descripcion": "pizza", "
 EJEMPLO TARJETA: "pagué 5000 de tarjeta" -> {"monto": 5000, "descripcion": "pago tarjeta", "categoria": "credito", "fecha": "hoy", "tipo": "gasto"}
 EJEMPLO SEGURO: "pague 800 de seguro moto" -> {"monto": 800, "descripcion": "seguro moto", "categoria": "transporte", "fecha": "hoy", "tipo": "gasto"}
 EJEMPLO INGRESO: "cobré 50000 de sueldo" -> {"monto": 50000, "descripcion": "sueldo", "categoria": "sueldo", "fecha": "hoy", "tipo": "ingreso"}
-`
+`;
 
 export async function procesarMensaje(
   texto: string,
   fechaHoy: string,
 ): Promise<Transaccion | null> {
   try {
-    const prompt = `Fecha de hoy: ${fechaHoy}\nMensaje: "${texto}"`
-    const result = await model.generateContent([PROMPT_SISTEMA, prompt])
+    const prompt = `Fecha de hoy: ${fechaHoy}\nMensaje: "${texto}"`;
+    const result = await model.generateContent([PROMPT_SISTEMA, prompt]);
 
-    const respuestaRaw = result.response.text()
+    const respuestaRaw = result.response.text();
 
     // Elimina ```json ... ``` o cualquier otro formato de bloque que el modelo pueda usar, y limpia espacios
     const respuestaLimpia = respuestaRaw
-      .replace(/```/g, '')
-      .replace(/\bjson\b/gi, '')
-      .trim()
+      .replace(/```/g, "")
+      .replace(/\bjson\b/gi, "")
+      .trim();
 
     //extrae el json real, “busca dentro del texto el bloque que parece { ... }”
-    const jsonMatch = respuestaLimpia.match(/\{[\s\S]*\}/)
+    const jsonMatch = respuestaLimpia.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
-      console.warn('⚠️ No se encontró JSON en la respuesta de Gemini')
-      return null
+      console.warn("⚠️ No se encontró JSON en la respuesta de Gemini");
+      return null;
     }
 
     // pasear el json a objeto
-    const json = JSON.parse(jsonMatch[0]) as Record<string, unknown>
+    const json = JSON.parse(jsonMatch[0]) as Record<string, unknown>;
     if (json.error) {
-      console.warn('⚠️ Gemini devolvió error:', json.error)
-      return null
+      console.warn("⚠️ Gemini devolvió error:", json.error);
+      return null;
     }
 
     // Validar y transformar los datos extraídos
-    const montoRaw = json['monto']
+    const montoRaw = json["monto"];
     const monto =
-      typeof montoRaw === 'string'
+      typeof montoRaw === "string"
         ? //si el monto viene con símbolos o texto, extrae solo la parte numérica, incluyendo decimales y negativos
-          Number(String(montoRaw).replace(/[^0-9.-]+/g, ''))
-        : Number(montoRaw)
-    const descripcion = String(json['descripcion'] ?? '').trim()
-    const categoria = String(json['categoria'] ?? 'otros')
+          Number(String(montoRaw).replace(/[^0-9.-]+/g, ""))
+        : Number(montoRaw);
+    const descripcion = String(json["descripcion"] ?? "").trim();
+    const categoria = String(json["categoria"] ?? "otros")
       .trim()
-      .toLowerCase()
-    const fecha = String(json['fecha'] ?? fechaHoy).trim() || fechaHoy
-    const tipo = String(json['tipo'] ?? '').trim() as 'gasto' | 'ingreso'
+      .toLowerCase();
+    const fecha = String(json["fecha"] ?? fechaHoy).trim() || fechaHoy;
+    const tipo = String(json["tipo"] ?? "").trim() as "gasto" | "ingreso";
 
     if (
       !Number.isFinite(monto) ||
       !descripcion ||
       !categoria ||
       !fecha ||
-      (tipo !== 'gasto' && tipo !== 'ingreso')
+      (tipo !== "gasto" && tipo !== "ingreso")
     ) {
       console.warn(
-        '⚠️ Datos incompletos o inválidos en la respuesta de Gemini',
+        "⚠️ Datos incompletos o inválidos en la respuesta de Gemini",
         {
           monto: montoRaw,
           descripcion,
@@ -123,8 +123,8 @@ export async function procesarMensaje(
           fecha,
           tipo,
         },
-      )
-      return null
+      );
+      return null;
     }
 
     return {
@@ -133,9 +133,9 @@ export async function procesarMensaje(
       categoria,
       fecha,
       tipo,
-    }
+    };
   } catch (error) {
-    console.error('❌ Error al procesar el mensaje con Gemini', error)
-    return null
+    console.error("❌ Error al procesar el mensaje con Gemini", error);
+    return null;
   }
 }

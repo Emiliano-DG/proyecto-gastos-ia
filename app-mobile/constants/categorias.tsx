@@ -62,6 +62,11 @@ export const CATEGORIAS: Record<
     color: '#8B5CF6', // púrpura
   },
 
+  ajuste: {
+    icon: 'settings-outline',
+    color: '#3B82F6',
+  },
+
   otros: {
     icon: 'cube-outline',
     color: '#71717A', // gris

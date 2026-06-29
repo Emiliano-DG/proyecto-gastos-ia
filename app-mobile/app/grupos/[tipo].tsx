@@ -1,40 +1,65 @@
-import { ThemedCard } from "@/components/ThemeCard";
-import { ThemedText } from "@/components/ThemeText";
-import { ThemeView } from "@/components/ThemeView";
-import { useTheme } from "@/hooks/useThemeColor";
-import { useTransaccionCompleta } from "@/hooks/useTransaccionCompleta";
-import { Ionicons } from "@expo/vector-icons";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { FlatList, Pressable, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { ThemedCard } from '@/components/ThemeCard'
+import { ThemedText } from '@/components/ThemeText'
+import { ThemeView } from '@/components/ThemeView'
+import { useTheme } from '@/hooks/useThemeColor'
+import { useTransaccionCompleta } from '@/hooks/useTransaccionCompleta'
+import { useDateStore } from '@/stores/useDateStore'
+import {
+  agruparPorCategoria,
+  calcularVariacion,
+  calculateBalance,
+  filtrarMes,
+} from '@/utils/finance'
+import { Ionicons } from '@expo/vector-icons'
+import { useLocalSearchParams, useRouter } from 'expo-router'
+import { FlatList, Pressable, View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 export default function CategoriaScreen() {
-  const { tipo, mes, anio } = useLocalSearchParams<{
-    tipo: string;
-    mes: string;
-    anio: string;
-  }>();
-  const router = useRouter();
-  const theme = useTheme();
+  const { tipo } = useLocalSearchParams<{
+    tipo: string
+  }>()
+  const router = useRouter()
+  const theme = useTheme()
 
-  const { data: transaccion } = useTransaccionCompleta();
+  const selectedMonth = useDateStore((state) => state.selectedMonth)
+  const { data: transaccion } = useTransaccionCompleta()
 
-  // Filtrar por categoría y mes
-  // const movimientos = (transaccion ?? []).filter((m) => {
-  //   const [year, month] = m.fecha.split("-").map(Number);
-  //   return (
-  //     m.categoria === nombre &&
-  //     m.tipo === "gasto" &&
-  //     month - 1 === Number(mes) &&
-  //     year === Number(anio)
-  //   );
-  // });
-  // Calcular total gastado en la categoría
-  // const total = movimientos.reduce((acc, m) => acc + m.monto, 0);
+  const filteredMovements = filtrarMes(transaccion ?? [], selectedMonth)
+  const { ingresos, gastos } = calculateBalance(filteredMovements ?? [])
+
+  //Filtrar por categoría y mes
+  const movimientos = (transaccion ?? []).filter((m) => {
+    const fechaMovimiento = new Date(m.fecha)
+    return (
+      m.tipo === tipo &&
+      fechaMovimiento.getMonth() === selectedMonth.getMonth() &&
+      fechaMovimiento.getFullYear() === selectedMonth.getFullYear()
+    )
+  })
+  //Calcular total gastado en la categoría
+  const total = movimientos.reduce((acc, m) => acc + m.monto, 0)
+
+  const gastosPorCategoria = agruparPorCategoria(
+    filteredMovements || [],
+    tipo as 'gasto' | 'ingreso',
+  )
+
+  //Convertir a un array para poder usar .map()
+  const categoriasArray: [string, number][] = Object.entries(gastosPorCategoria)
+
+  //FILTRAR MOVIMIENTOS DEL MES ANTERIOR
+  const previousMonth = new Date(selectedMonth)
+  previousMonth.setMonth(previousMonth.getMonth() - 1)
+  const previusMonthMovements = filtrarMes(transaccion ?? [], previousMonth)
+  const gastosPorCategoriaAnterior = agruparPorCategoria(
+    previusMonthMovements || [],
+    tipo as 'gasto' | 'ingreso',
+  )
 
   return (
     <ThemeView className="flex-1">
-      <SafeAreaView className="flex-1" edges={["top"]}>
+      <SafeAreaView className="flex-1" edges={['top']}>
         {/* Header */}
         <View className="flex-row items-center px-5 py-4 gap-3">
           <Pressable
@@ -47,7 +72,84 @@ export default function CategoriaScreen() {
             {tipo}
           </ThemedText>
         </View>
+
+        {categoriasArray.length > 0 && (
+          <View className="px-7 flex-1">
+            <FlatList
+              data={categoriasArray.sort((a, b) => b[1] - a[1])}
+              renderItem={({ item: [nombre, total] }) => {
+                const porcentaje = gastos > 0 ? (total / gastos) * 100 : 0
+                const variacion = calcularVariacion(
+                  total,
+                  gastosPorCategoriaAnterior[nombre] || 0,
+                )
+                return (
+                  <Pressable
+                    onPress={() => {
+                      router.push({
+                        pathname: '/categoria/[nombre]',
+                        params: {
+                          nombre,
+                          tipo,
+                        },
+                      })
+                    }}
+                    style={({ pressed }) => [{ opacity: pressed ? 0.7 : 1 }]}
+                  >
+                    <ThemedCard className="p-4 rounded-lg mt-3">
+                      {/* Fila 1 — nombre y monto */}
+                      <View className="flex-row justify-between items-center mb-3">
+                        <ThemedText className="font-semibold capitalize">
+                          {nombre}
+                        </ThemedText>
+                        <ThemedText className="font-bold">
+                          ${total.toLocaleString('es-AR')}
+                        </ThemedText>
+                      </View>
+
+                      {/* Fila 2 — barra, porcentaje, comparativa */}
+                      <View className="flex-row items-center gap-3">
+                        <View
+                          className="flex-1 h-2 rounded-full overflow-hidden"
+                          style={{ backgroundColor: theme.background }}
+                        >
+                          <View
+                            style={{
+                              width: `${porcentaje}%`,
+                              height: '100%',
+                              backgroundColor: theme.primary,
+                            }}
+                          />
+                        </View>
+
+                        <ThemedText className="text-xs font-semibold w-10 text-right">
+                          {porcentaje.toFixed(0)}%
+                        </ThemedText>
+
+                        {variacion !== null && (
+                          <ThemedText
+                            className="text-xs font-semibold w-16 text-right"
+                            style={{
+                              color:
+                                variacion > 0 ? theme.expense : theme.income,
+                            }}
+                          >
+                            {variacion >= 0 ? '▲' : '▼'}{' '}
+                            {Math.abs(variacion).toFixed(0)}%
+                          </ThemedText>
+                        )}
+                      </View>
+                    </ThemedCard>
+                  </Pressable>
+                )
+              }}
+              keyExtractor={([nombre]) => nombre}
+              ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
+              contentContainerStyle={{ paddingTop: 16 }}
+            />
+          </View>
+        )}
       </SafeAreaView>
     </ThemeView>
-  );
+  )
 }
