@@ -1,45 +1,51 @@
-import { ThemedCard } from '@/components/ThemeCard'
-import { ThemedText } from '@/components/ThemeText'
-import { ThemeView } from '@/components/ThemeView'
-import { useTheme } from '@/hooks/useThemeColor'
-import { useTransaccionCompleta } from '@/hooks/useTransaccionCompleta'
-import { useDateStore } from '@/stores/useDateStore'
-import { Ionicons } from '@expo/vector-icons'
-import { useLocalSearchParams, useRouter } from 'expo-router'
-import { FlatList, Pressable, View } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { ThemedCard } from "@/components/ThemeCard";
+import { ThemedText } from "@/components/ThemeText";
+import { ThemeView } from "@/components/ThemeView";
+import { useTheme } from "@/hooks/useThemeColor";
+import { useTransaccionCompleta } from "@/hooks/useTransaccionCompleta";
+import { useDateStore } from "@/stores/useDateStore";
+import {
+  agruparPorCategoria,
+  calculateBalance,
+  filtrarMes,
+} from "@/utils/finance";
+import { Ionicons } from "@expo/vector-icons";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { FlatList, Pressable, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function CategoriaScreen() {
   const { nombre, tipo } = useLocalSearchParams<{
-    nombre: string
-    tipo: string
-  }>()
-  const router = useRouter()
-  const theme = useTheme()
+    nombre: string;
+    tipo: string;
+  }>();
+  const router = useRouter();
+  const theme = useTheme();
   // hook de zustand para manejar el mes seleccionado
-  const selectedMonth = useDateStore((state) => state.selectedMonth)
+  const selectedMonth = useDateStore((state) => state.selectedMonth);
 
   // Traer todas las transacciones
-  const { data: transaccion } = useTransaccionCompleta()
+  const { data: transaccion } = useTransaccionCompleta();
 
-  // Filtrar por categoría y mes
-  const movimientos = (transaccion ?? []).filter((m) => {
-    const fechaMovimiento = new Date(m.fecha)
-    return (
-      m.categoria === nombre &&
-      m.tipo === tipo &&
-      fechaMovimiento.getMonth() === selectedMonth.getMonth() &&
-      fechaMovimiento.getFullYear() === selectedMonth.getFullYear()
-    )
-  })
-  // Calcular total gastado en la categoría
-  const total = movimientos.reduce((acc, m) => acc + m.monto, 0)
+  const filteredMovements = filtrarMes(transaccion ?? [], selectedMonth);
+  const { ingresos, gastos } = calculateBalance(filteredMovements ?? []);
 
-  const esIngreso = tipo === 'ingreso'
+  const gastosPorCategoria = agruparPorCategoria(
+    filteredMovements || [],
+    tipo as "gasto" | "ingreso",
+  );
+
+  const total = gastosPorCategoria[nombre] ?? 0;
+
+  const movimientos = filteredMovements.filter(
+    (m) => m.categoria === nombre && m.tipo === (tipo as "gasto" | "ingreso"),
+  );
+
+  const esIngreso = tipo === "ingreso";
 
   return (
     <ThemeView className="flex-1">
-      <SafeAreaView className="flex-1" edges={['top']}>
+      <SafeAreaView className="flex-1" edges={["top"]}>
         {/* Header */}
         <View className="flex-row items-center px-5 py-4 gap-3">
           <Pressable
@@ -60,14 +66,14 @@ export default function CategoriaScreen() {
               Total de la categoría
             </ThemedText>
             <ThemedText className="text-2xl font-bold">
-              ${total.toLocaleString('es-AR')}
+              ${total.toLocaleString("es-AR")}
             </ThemedText>
             <ThemedText
               variant="textSecondary"
               className="text-xs mt-1 capitalize"
             >
               {movimientos.length} movimiento
-              {movimientos.length !== 1 ? 's' : ''}
+              {movimientos.length !== 1 ? "s" : ""}
             </ThemedText>
           </ThemedCard>
         </View>
@@ -91,7 +97,7 @@ export default function CategoriaScreen() {
                 className="text-base font-bold"
                 style={{ color: esIngreso ? theme.income : theme.expense }}
               >
-                {esIngreso ? '+' : '-'}${item.monto.toLocaleString('es-AR')}
+                {esIngreso ? "+" : "-"}${item.monto.toLocaleString("es-AR")}
               </ThemedText>
             </ThemedCard>
           )}
@@ -103,5 +109,5 @@ export default function CategoriaScreen() {
         />
       </SafeAreaView>
     </ThemeView>
-  )
+  );
 }
