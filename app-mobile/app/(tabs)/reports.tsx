@@ -6,32 +6,42 @@ import { useDateStore } from '@/stores/useDateStore'
 import {
   agruparPorCategoria,
   calculateBalance,
-  filtrarMes,
   prepararDatosChart,
 } from '@/utils/finance'
 import { Ionicons } from '@expo/vector-icons'
 import { router } from 'expo-router'
-import { Pressable, View } from 'react-native'
+import { ActivityIndicator, Pressable, View } from 'react-native'
 import { PieChart } from 'react-native-gifted-charts'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 export default function ReportScreen() {
   const theme = useTheme()
-  const {
-    data: transaccion,
-    isLoading: cargando,
-    error,
-  } = useTransaccionCompleta()
 
   // hook de zustand para manejar el mes seleccionado
   const selectedMonth = useDateStore((state) => state.selectedMonth)
   const changeMonth = useDateStore((state) => state.changeMonth)
 
-  //FILTRAR MOVIMIENTOS DEL MES SELECCIONADO
-  const filteredMovements = filtrarMes(transaccion ?? [], selectedMonth)
+  // Traer todas las transacciones filtradas por mes
+  const {
+    data: transaccion,
+    isLoading: cargando,
+    error,
+  } = useTransaccionCompleta(
+    selectedMonth.getMonth(),
+    selectedMonth.getFullYear(),
+  )
+
+  // Mostrar indicador de carga mientras se obtienen los datos
+  if (cargando) {
+    return (
+      <View className="flex-1 justify-center items-center bg-[#13131f]">
+        <ActivityIndicator size="large" color="#1D9BF0" />
+      </View>
+    )
+  }
 
   //Calculamos balance global, ingresos y gastos del mes seleccionado
-  const { ingresos, gastos } = calculateBalance(filteredMovements ?? [])
+  const { ingresos, gastos } = calculateBalance(transaccion ?? [])
 
   // Formatear el mes para mostrarlo en la UI
   const monthLabel = selectedMonth.toLocaleString('es-AR', {
@@ -40,7 +50,7 @@ export default function ReportScreen() {
   })
 
   //  Agrupar gastos por categoría
-  const gastosPorCategoria = agruparPorCategoria(filteredMovements || [])
+  const gastosPorCategoria = agruparPorCategoria(transaccion || [])
 
   //  Convertir a un array para poder usar .map()
   const categoriasArray: [string, number][] = Object.entries(gastosPorCategoria)

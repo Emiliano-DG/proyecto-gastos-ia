@@ -1,35 +1,44 @@
-import { BalanceCard } from "@/components/BalanceCard";
-import { ThemeView } from "@/components/ThemeView";
-import TransaccionCard from "@/components/TransaccionCard";
-import { useBalance } from "@/hooks/useBalance";
-import { useTransaccion } from "@/hooks/useTransaccion";
-import { calculateBalance } from "@/utils/finance";
+import { BalanceCard } from '@/components/BalanceCard'
+import { ThemeView } from '@/components/ThemeView'
+import TransaccionCard from '@/components/TransaccionCard'
+import { useTransaccionCompleta } from '@/hooks/useTransaccionCompleta'
+import { useDateStore } from '@/stores/useDateStore'
+import { calculateBalance } from '@/utils/finance'
 import {
   ActivityIndicator,
   FlatList,
   Text,
   TouchableOpacity,
   View,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+} from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 export default function HomeScreen() {
+  const selectedMonth = useDateStore((state) => state.selectedMonth)
+
   const {
     data: transaccion,
     isLoading: cargando,
     error,
-    refetch: refrescarTransaccion,
-  } = useTransaccion();
+    refetch,
+  } = useTransaccionCompleta(
+    selectedMonth.getMonth(),
+    selectedMonth.getFullYear(),
+  )
 
-  const { data: balance, isLoading: cargandoBalance } = useBalance();
+  //onst { data: balance, isLoading: cargandoBalance } = useBalance()
+
+  const { ingresos, gastos, TransaccionBalance } = calculateBalance(
+    transaccion ?? [],
+  )
 
   // Mostrar indicador de carga mientras se obtienen los datos
-  if (cargando || cargandoBalance) {
+  if (cargando) {
     return (
       <View className="flex-1 justify-center items-center bg-[#13131f]">
         <ActivityIndicator size="large" color="#1D9BF0" />
       </View>
-    );
+    )
   }
 
   // 2. SI HAY ERROR: Mostramos una interfaz de error con opción a reintentar
@@ -40,35 +49,33 @@ export default function HomeScreen() {
         <Text className="text-white text-lg font-semibold text-center mb-2">
           Ups, algo salió mal
         </Text>
-        <Text className="text-gray-400 text-sm text-center mb-6">{error?.message || "Error inesperado"}</Text>
+        <Text className="text-gray-400 text-sm text-center mb-6">
+          {error?.message || 'Error inesperado'}
+        </Text>
 
         {/* Botón para volver a ejecutar cargarDatos() */}
         <TouchableOpacity
-          onPress={refrescarTransaccion}
+          onPress={() => refetch()}
           className="bg-[#1D9BF0] px-6 py-3 rounded-xl"
         >
           <Text className="text-[#13131f] font-bold">Volver a intentar</Text>
         </TouchableOpacity>
       </View>
-    );
+    )
   }
-
-  const { TransaccionBalance, ingresos, gastos } = calculateBalance(
-    transaccion ?? [],
-  );
 
   return (
     <ThemeView className="flex-1">
-      <SafeAreaView className="flex-1" edges={["top"]}>
+      <SafeAreaView className="flex-1" edges={['top']}>
         <FlatList
           data={transaccion}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => <TransaccionCard transaccion={item} />}
           ListHeaderComponent={
             <BalanceCard
-              balance={balance?.TransaccionBalance ?? 0}
-              ingresos={balance?.ingresos ?? 0}
-              egresos={balance?.gastos ?? 0}
+              balance={TransaccionBalance ?? 0}
+              ingresos={ingresos ?? 0}
+              egresos={gastos ?? 0}
             />
           }
           contentContainerStyle={{ flexGrow: 1, paddingBottom: 20 }}
@@ -80,5 +87,5 @@ export default function HomeScreen() {
         />
       </SafeAreaView>
     </ThemeView>
-  );
+  )
 }
