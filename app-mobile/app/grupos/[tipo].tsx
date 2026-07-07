@@ -11,7 +11,8 @@ import {
 } from '@/utils/finance'
 import { Ionicons } from '@expo/vector-icons'
 import { useLocalSearchParams, useRouter } from 'expo-router'
-import { FlatList, Pressable, View } from 'react-native'
+import { Pressable } from 'react-native-gesture-handler'
+import { FlatList, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 export default function CategoriaScreen() {
@@ -123,7 +124,13 @@ export default function CategoriaScreen() {
                             className="text-xs font-semibold w-16 text-right"
                             style={{
                               color:
-                                variacion > 0 ? theme.expense : theme.income,
+                                tipo === 'ingreso'
+                                  ? variacion > 0
+                                    ? theme.income
+                                    : theme.expense
+                                  : variacion > 0
+                                    ? theme.expense
+                                    : theme.income,
                             }}
                           >
                             {variacion >= 0 ? '▲' : '▼'}{' '}

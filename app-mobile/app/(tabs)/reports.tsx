@@ -1,3 +1,5 @@
+import { BalanceCard } from '@/components/BalanceCard'
+import { ResumenCard } from '@/components/ResumenCard'
 import { ThemedText } from '@/components/ThemeText'
 import { ThemeView } from '@/components/ThemeView'
 import { useTheme } from '@/hooks/useThemeColor'
@@ -9,8 +11,8 @@ import {
   prepararDatosChart,
 } from '@/utils/finance'
 import { Ionicons } from '@expo/vector-icons'
-import { router } from 'expo-router'
-import { ActivityIndicator, Pressable, View } from 'react-native'
+import { ActivityIndicator, View } from 'react-native'
+import { Pressable } from 'react-native-gesture-handler'
 import { PieChart } from 'react-native-gifted-charts'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
@@ -90,6 +92,8 @@ export default function ReportScreen() {
             <Ionicons name="chevron-forward" size={24} color={theme.icon} />
           </Pressable>
         </View>
+        {/* Card de balance del mes seleccionado */}
+        <BalanceCard balance={ingresos - gastos} mode="compact" />
         {/* Grafico de torta */}
         {datosChart.length > 0 && (
           <View className="items-center mt-4">
@@ -102,7 +106,7 @@ export default function ReportScreen() {
               centerLabelComponent={() => (
                 <View className="items-center ">
                   <ThemedText variant="textSecondary" className="text-xs">
-                    Total
+                    Gastos
                   </ThemedText>
                   <ThemedText className="text-lg font-bold">
                     ${gastos.toLocaleString('es-AR')}
@@ -131,72 +135,8 @@ export default function ReportScreen() {
         {/* Cards de resumen siempre visibles  */}
         <View className="px-7 mt-6">
           <View className="flex-row gap-3 mb-2">
-            {/* Card de ingreso */}
-            <Pressable
-              onPress={() => {
-                router.push({
-                  pathname: '/grupos/[tipo]',
-                  params: {
-                    tipo: 'ingreso',
-                  },
-                })
-              }}
-              style={({ pressed }) => [{ opacity: pressed ? 0.7 : 1 }]}
-              className="flex-1"
-            >
-              <View
-                className="p-4 rounded-xl"
-                style={{
-                  backgroundColor: theme.card,
-                }}
-              >
-                <View className="flex-row items-center gap-2 mb-1">
-                  <View
-                    className="w-2.5 h-2.5 rounded-full"
-                    style={{ backgroundColor: theme.income }}
-                  />
-                  <ThemedText variant="textSecondary" className="text-xs">
-                    Ingresos
-                  </ThemedText>
-                </View>
-                <ThemedText className="text-lg font-bold">
-                  ${ingresos.toLocaleString('es-AR')}
-                </ThemedText>
-              </View>
-            </Pressable>
-            {/* Card de gasto  */}
-            <Pressable
-              onPress={() => {
-                router.push({
-                  pathname: '/grupos/[tipo]',
-                  params: {
-                    tipo: 'gasto',
-                  },
-                })
-              }}
-              style={({ pressed }) => [{ opacity: pressed ? 0.7 : 1 }]}
-              className="flex-1"
-            >
-              <View
-                className="p-4 rounded-xl"
-                style={{
-                  backgroundColor: theme.card,
-                }}
-              >
-                <View className="flex-row items-center gap-2 mb-1">
-                  <View
-                    className="w-2.5 h-2.5 rounded-full"
-                    style={{ backgroundColor: theme.expense }}
-                  />
-                  <ThemedText variant="textSecondary" className="text-xs">
-                    Gastos
-                  </ThemedText>
-                </View>
-                <ThemedText className="text-lg font-bold">
-                  ${gastos.toLocaleString('es-AR')}
-                </ThemedText>
-              </View>
-            </Pressable>
+            <ResumenCard tipo="ingreso" monto={ingresos} />
+            <ResumenCard tipo="gasto" monto={gastos} />
           </View>
         </View>
       </SafeAreaView>

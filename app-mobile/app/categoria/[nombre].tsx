@@ -7,7 +7,8 @@ import { useDateStore } from '@/stores/useDateStore'
 import { agruparPorCategoria } from '@/utils/finance'
 import { Ionicons } from '@expo/vector-icons'
 import { useLocalSearchParams, useRouter } from 'expo-router'
-import { FlatList, Pressable, View } from 'react-native'
+import { Pressable } from 'react-native-gesture-handler'
+import { FlatList, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 export default function CategoriaScreen() {
