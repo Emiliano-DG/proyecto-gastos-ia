@@ -8,6 +8,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
+import { useTheme } from "@/hooks/useThemeColor";
 import "../global.css";
 
 // si una pantalla rompe, se mostrará el error en lugar de la pantalla rota
@@ -50,10 +51,16 @@ export default function RootLayout() {
 const queryClient = new QueryClient();
 
 function RootLayoutNav() {
+  const theme = useTheme();
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <QueryClientProvider client={queryClient}>
-        <Stack>
+        <Stack
+          screenOptions={{
+            contentStyle: { backgroundColor: theme.background },
+          }}
+        >
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen
             name="categoria/[nombre]"

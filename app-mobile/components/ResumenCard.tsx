@@ -1,8 +1,7 @@
 import { ThemedText } from '@/components/ThemeText'
 import { useTheme } from '@/hooks/useThemeColor'
 import { router } from 'expo-router'
-import { Pressable } from 'react-native-gesture-handler'
-import { View } from 'react-native'
+import { Pressable, View } from 'react-native'
 
 interface Props {
   tipo: 'ingreso' | 'gasto'

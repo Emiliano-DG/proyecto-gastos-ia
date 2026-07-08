@@ -1,4 +1,5 @@
 import { BalanceCard } from '@/components/BalanceCard'
+import { Loading } from '@/components/Loading'
 import { ResumenCard } from '@/components/ResumenCard'
 import { ThemedText } from '@/components/ThemeText'
 import { ThemeView } from '@/components/ThemeView'
@@ -11,8 +12,7 @@ import {
   prepararDatosChart,
 } from '@/utils/finance'
 import { Ionicons } from '@expo/vector-icons'
-import { ActivityIndicator, View } from 'react-native'
-import { Pressable } from 'react-native-gesture-handler'
+import { Pressable, View } from 'react-native'
 import { PieChart } from 'react-native-gifted-charts'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
@@ -34,13 +34,7 @@ export default function ReportScreen() {
   )
 
   // Mostrar indicador de carga mientras se obtienen los datos
-  if (cargando) {
-    return (
-      <View className="flex-1 justify-center items-center bg-[#13131f]">
-        <ActivityIndicator size="large" color="#1D9BF0" />
-      </View>
-    )
-  }
+  if (cargando) return <Loading />
 
   //Calculamos balance global, ingresos y gastos del mes seleccionado
   const { ingresos, gastos } = calculateBalance(transaccion ?? [])

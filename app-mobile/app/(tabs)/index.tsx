@@ -1,21 +1,18 @@
 import { BalanceCard } from '@/components/BalanceCard'
+import { Loading } from '@/components/Loading'
 import { ThemeView } from '@/components/ThemeView'
 import TransaccionCard from '@/components/TransaccionCard'
+import { useTheme } from '@/hooks/useThemeColor'
 import { useTransaccionCompleta } from '@/hooks/useTransaccionCompleta'
 import { useDateStore } from '@/stores/useDateStore'
 import { calculateBalance } from '@/utils/finance'
-import {
-  ActivityIndicator,
-  FlatList,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native'
+import { FlatList, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 export default function HomeScreen() {
-  const selectedMonth = useDateStore((state) => state.selectedMonth)
+  const theme = useTheme()
 
+  const selectedMonth = useDateStore((state) => state.selectedMonth)
   const {
     data: transaccion,
     isLoading: cargando,
@@ -33,18 +30,14 @@ export default function HomeScreen() {
   )
 
   // Mostrar indicador de carga mientras se obtienen los datos
-  if (cargando) {
-    return (
-      <View className="flex-1 justify-center items-center bg-[#13131f]">
-        <ActivityIndicator size="large" color="#1D9BF0" />
-      </View>
-    )
-  }
-
+  if (cargando) return <Loading />
   // 2. SI HAY ERROR: Mostramos una interfaz de error con opción a reintentar
   if (error) {
     return (
-      <View className="flex-1 justify-center items-center bg-[#13131f] px-6">
+      <View
+        className="flex-1 justify-center items-center"
+        style={{ backgroundColor: theme.background }}
+      >
         <Text className="text-3xl mb-2">⚠️</Text>
         <Text className="text-white text-lg font-semibold text-center mb-2">
           Ups, algo salió mal
