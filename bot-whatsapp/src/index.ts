@@ -41,7 +41,7 @@ app.get("/qr", async (req, res) => {
 
 // Arranca el servidor web en el puerto 3000
 // Railway convierte ese puerto en la URL pública del bot
-app.listen(3000, () => {
+app.listen(process.env.PORT || 3000, () => {
   console.log("🌐 Servidor QR corriendo en puerto 3000");
 });
 
