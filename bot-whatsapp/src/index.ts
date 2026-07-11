@@ -146,19 +146,29 @@ async function conectar() {
         transaccion.tipo === "ingreso" ? "🟢 Ingreso" : "🔴 Gasto";
 
       if (guardado) {
-        // Si se guardó bien, responde con el resumen de la transacción
+        // Formato profesional de moneda
+        const montoFormateado = new Intl.NumberFormat("es-AR", {
+          style: "currency",
+          currency: "ARS",
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0,
+        }).format(transaccion.monto);
+
+        // Mensaje de éxito: Estético, limpio y minimalista
         await sock.sendMessage(jid, {
-          text: `${emoji} Registrado!
-           📊 ${tipoTexto}
-           💵 ${transaccion.monto}
-           📝 ${transaccion.descripcion}
-           🏷️ ${transaccion.categoria}
-           📅 ${transaccion.fecha}`,
+          text:
+            `${emoji} *¡Movimiento Registrado!*\n\n` +
+            `• *Tipo:* ${tipoTexto}\n` +
+            `• *Monto:* ${montoFormateado}\n` +
+            `• *Descripción:* ${transaccion.descripcion}\n` +
+            `• *Categoría:* ${transaccion.categoria}\n` +
+            `• *Fecha:* ${transaccion.fecha}\n\n` +
+            `_Tu balance ha sido actualizado automáticamente._`, // <-- Cierre de valor para el usuario
         });
       } else {
-        // Si hubo error al guardar en Supabase, avisa
+        // Error al guardar (Falla técnica interna)
         await sock.sendMessage(jid, {
-          text: "⚠️ Entendí el gasto pero hubo un error al guardarlo. Intentá de nuevo.",
+          text: "⚠️ *Servicio temporalmente no disponible.*\nEstamos experimentando intermitencias al guardar tus datos. Por favor, reintentá en unos segundos.",
         });
       }
     } else {
