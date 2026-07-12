@@ -1,6 +1,6 @@
-# 💰 Smart Finance Tracker
-
 <div align="center">
+
+# 💰 Smart Finance Tracker
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![React Native](https://img.shields.io/badge/React_Native-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://reactnative.dev/)
@@ -9,54 +9,54 @@
 [![Gemini](https://img.shields.io/badge/Gemini-8E75FF?style=for-the-badge&logo=google&logoColor=white)](https://deepmind.google/technologies/gemini/)
 [![Tailwind CSS](https://img.shields.io/badge/NativeWind-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://www.nativewind.dev/)
 
-**Track your expenses effortlessly — just send a WhatsApp message.**
+**Controlá tus gastos sin esfuerzo — mandá un mensaje por WhatsApp y listo.**
 
-Send *"gasté $500 en pizza"* to your bot, and AI automatically categorizes and stores it. Then visualize everything in a beautiful mobile app.
+Mandá *"gasté $500 en pizza"* a tu bot, y la IA lo categoriza y lo guarda automáticamente. Después visualizá todo en una app mobile hermosa.
 
 </div>
 
 ---
 
-## ✨ Features
+## ✨ Funcionalidades
 
-### 🤖 WhatsApp Bot
-- **Natural Language Parsing** — Send messages like *"gasté $500 en pizza"* or *"cobré $50.000 de sueldo"*. Powered by **Google Gemini AI**.
-- **Automatic Categorization** — Food, transport, health, entertainment, salary, freelance, credit card payments, and more.
-- **Instant Confirmation** — Get a clean, formatted receipt back in WhatsApp.
-- **Monthly Balance Adjustment** — Supabase Edge Function automatically reconciles monthly surpluses/shortfalls.
-- **Persistent Session** — Auth state stored in Supabase; survives restarts without re-scanning QR.
+### 🤖 Bot de WhatsApp
+- **Lenguaje natural** — Mandá mensajes como *"gasté $500 en pizza"* o *"cobré $50.000 de sueldo"*. Funciona con **Google Gemini AI**.
+- **Categorización automática** — Comida, transporte, salud, entretenimiento, sueldo, freelance, tarjeta de crédito y más.
+- **Confirmación instantánea** — Recibí un comprobante limpio y formateado de vuelta en WhatsApp.
+- **Ajuste mensual automático** — Una Edge Function de Supabase reconcilia sobrantes o faltantes cada mes.
+- **Sesión persistente** — El estado de autenticación se guarda en Supabase, no necesitas escanear el QR cada vez.
 
-### 📱 Mobile App (React Native + Expo)
-- **Dashboard** — View real-time balance, income, and expenses at a glance.
-- **Transaction Feed** — Scrollable list with icons, categories, and color-coded amounts.
-- **Interactive Reports** — Navigate by month, visual breakdown via **pie charts**, income vs. expense comparison.
-- **Category Breakdown** — Tap any category to drill into details.
-- **Dark Mode** — Elegant light/dark theme inspired by Apple design language.
-- **Native Performance** — Built with Expo SDK 54, Reanimated, and Gesture Handler.
+### 📱 App Mobile (React Native + Expo)
+- **Panel principal** — Balance disponible, ingresos y gastos de un vistazo.
+- **Feed de transacciones** — Lista scrolleable con íconos, categorías y montos con código de colores.
+- **Reportes interactivos** — Navegá por mes, gráficos de torta, comparativa de ingresos vs gastos.
+- **Desglose por categoría** — Tocá cualquier categoría para ver el detalle.
+- **Modo oscuro** — Tema elegante claro/oscuro inspirado en el diseño de Apple.
+- **Rendimiento nativo** — Expo SDK 54, Reanimated y Gesture Handler.
 
 ### 🛡️ Backend (Supabase)
-- **PostgreSQL Database** — Structured schema for transactions with WhatsApp integration.
-- **Edge Functions** — Serverless monthly adjustment logic running on Deno.
-- **Real-time Ready** — Supabase Realtime configured for live updates.
+- **Base de datos PostgreSQL** — Esquema estructurado para transacciones con integración de WhatsApp.
+- **Edge Functions** — Lógica serverless de ajuste mensual corriendo en Deno.
+- **Real-time listo** — Supabase Realtime configurado para actualizaciones en vivo.
 
 ---
 
-## 🏗️ Architecture
+## 🏗️ Arquitectura
 
 ```
                     ┌──────────────────────┐
-                    │     WhatsApp User     │
+                    │   Usuario WhatsApp    │
                     └──────┬───────────────┘
                            │ "gasté $500 en pizza"
                            ▼
 ┌─────────────────────────────────────────────────┐
-│           WhatsApp Bot (TypeScript)              │
+│            Bot de WhatsApp (TypeScript)           │
 │  ┌──────────┐    ┌──────────┐    ┌──────────┐   │
 │  │  Baileys  │───▶│  Gemini  │───▶│ Supabase │   │
 │  │ (Web API) │    │   AI     │    │  Client  │   │
 │  └──────────┘    └──────────┘    └──────────┘   │
 │         │                                        │
-│    Express Server (QR display)                   │
+│    Express Server (para mostrar QR)              │
 └──────────────────────┬──────────────────────────┘
                        │
                        ▼
@@ -64,209 +64,209 @@ Send *"gasté $500 en pizza"* to your bot, and AI automatically categorizes and 
 │               Supabase (PostgreSQL)              │
 │  ┌────────────────┐  ┌────────────────────────┐  │
 │  │  transacciones  │  │  Edge Functions        │  │
-│  │     table       │  │  (Monthly Adjustment)  │  │
+│  │     (tabla)     │  │  (Ajuste Mensual)      │  │
 │  └────────────────┘  └────────────────────────┘  │
 └──────────────────────┬──────────────────────────┘
                        │
                        ▼
 ┌─────────────────────────────────────────────────┐
-│         Mobile App (React Native + Expo)         │
+│         App Mobile (React Native + Expo)          │
 │  ┌──────────┐  ┌──────────┐  ┌────────────────┐ │
 │  │  Expo    │  │ TanStack │  │   NativeWind   │ │
 │  │  Router  │  │ Query    │  │  (Tailwind)    │ │
 │  └──────────┘  └──────────┘  └────────────────┘ │
 │  ┌──────────┐  ┌──────────┐  ┌────────────────┐ │
-│  │  Zustand │  │ Gifted   │  │   Dark/Light   │ │
-│  │          │  │ Charts   │  │   Theme        │ │
+│  │  Zustand │  │ Gifted   │  │  Tema           │ │
+│  │          │  │ Charts   │  │  Claro/Oscuro   │ │
 │  └──────────┘  └──────────┘  └────────────────┘ │
 └─────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ Tecnologías
 
-### WhatsApp Bot
-| Technology | Purpose |
+### Bot de WhatsApp
+| Tecnología | Propósito |
 |---|---|
-| **TypeScript** | Type-safe development |
-| **Baileys** | WhatsApp Web API (unofficial, no browser needed) |
-| **Google Gemini 2.5 Flash** | Natural language → structured transaction data |
-| **Express** | Web server for QR authentication |
-| **Supabase JS** | Database client |
-| **QRCode** | QR generation for WhatsApp pairing |
+| **TypeScript** | Código tipado y seguro |
+| **Baileys** | API no oficial de WhatsApp Web (sin navegador) |
+| **Google Gemini 2.5 Flash** | Lenguaje natural → transacción estructurada |
+| **Express** | Servidor web para el QR de autenticación |
+| **Supabase JS** | Cliente de base de datos |
+| **QRCode** | Generación de QR para vincular WhatsApp |
 
-### Mobile App
-| Technology | Purpose |
+### App Mobile
+| Tecnología | Propósito |
 |---|---|
-| **React Native 0.81** | Cross-platform mobile framework |
-| **Expo SDK 54** | Managed runtime & build pipeline |
-| **Expo Router** | File-based navigation |
-| **NativeWind 4** | Tailwind CSS for React Native |
-| **TanStack React Query 5** | Server state & caching |
-| **Zustand** | Lightweight client state |
-| **react-native-gifted-charts** | Interactive pie charts |
-| **react-native-reanimated** | Smooth animations |
-| **Supabase JS** | Database client |
+| **React Native 0.81** | Framework mobile cross-platform |
+| **Expo SDK 54** | Runtime administrado y build pipeline |
+| **Expo Router** | Navegación basada en archivos |
+| **NativeWind 4** | Tailwind CSS para React Native |
+| **TanStack React Query 5** | Estado del servidor y caché |
+| **Zustand** | Estado global liviano |
+| **react-native-gifted-charts** | Gráficos de torta interactivos |
+| **react-native-reanimated** | Animaciones suaves |
+| **Supabase JS** | Cliente de base de datos |
 
 ### Backend
-| Technology | Purpose |
+| Tecnología | Propósito |
 |---|---|
-| **Supabase** | PostgreSQL database + auth + edge functions |
-| **Deno** | Runtime for Supabase Edge Functions |
-| **Supabase Realtime** | Live data sync (configured) |
+| **Supabase** | Base de datos PostgreSQL + auth + edge functions |
+| **Deno** | Runtime para las Edge Functions de Supabase |
+| **Supabase Realtime** | Sincronización de datos en vivo |
 
 ---
 
-## 📸 Screenshots
+## 📸 Capturas de pantalla
 
-*(Add screenshots here — home screen, reports with pie chart, WhatsApp conversation)*
+*(Agregar screenshots — pantalla principal, reportes con gráfico de torta, conversación de WhatsApp)*
 
-> **Tip:** Take screenshots of the app in both light and dark mode to showcase the theme system.
+> **Tip:** Sacale capturas en modo claro y oscuro para mostrar el theme.
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Cómo empezar
 
-### Prerequisites
+### Requisitos
 - Node.js 18+
-- A Supabase project
-- A Google Gemini API key
-- Expo Go (for mobile testing)
+- Un proyecto en Supabase
+- Una API key de Google Gemini
+- Expo Go (para probar la app mobile)
 
-### 1. Clone the repository
+### 1. Clonar el repositorio
 ```bash
-git clone https://github.com/Emiliano-DG/bot-gastos-ia.git
-cd smart-finance-tracker
+git clone https://github.com/Emiliano-DG/proyecto-gastos-ia.git
+cd proyecto-gastos-ia
 ```
 
-### 2. WhatsApp Bot Setup
+### 2. Configurar el Bot de WhatsApp
 ```bash
 cd bot-whatsapp
 npm install
 cp .env.example .env
 ```
 
-Fill in your `.env`:
+Completá tu `.env`:
 ```env
-GEMINI_API_KEY=your_gemini_api_key
-SUPABASE_URL=your_supabase_url
-SUPABASE_KEY=your_supabase_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+GEMINI_API_KEY=tu_api_key_de_gemini
+SUPABASE_URL=https://tu-proyecto.supabase.co
+SUPABASE_KEY=tu_anon_key
+SUPABASE_SERVICE_ROLE_KEY=tu_service_role_key
 PORT=3000
 ```
 
-Run the bot:
+Ejecutar el bot:
 ```bash
 npm run dev
 ```
 
-Open `http://localhost:3000/qr` in your browser, scan the QR with WhatsApp, and you're connected.
+Abrí `http://localhost:3000/qr` en el navegador, escaneá el QR con WhatsApp y ya está conectado.
 
-### 3. Mobile App Setup
+### 3. Configurar la App Mobile
 ```bash
 cd app-mobile
 npm install
 cp .env.example .env
 ```
 
-Fill in your `.env`:
+Completá tu `.env`:
 ```env
-EXPO_PUBLIC_SUPABASE_URL=your_supabase_url
-EXPO_PUBLIC_SUPABASE_KEY=your_supabase_anon_key
+EXPO_PUBLIC_SUPABASE_URL=https://tu-proyecto.supabase.co
+EXPO_PUBLIC_SUPABASE_KEY=tu_anon_key
 ```
 
-Start the app:
+Iniciar la app:
 ```bash
 npx expo start
 ```
 
-### 4. Database Setup
-Create a `transacciones` table in Supabase with the following schema:
+### 4. Base de datos
+Crear la tabla `transacciones` en Supabase con este esquema:
 
-| Column | Type | Description |
+| Columna | Tipo | Descripción |
 |---|---|---|
-| `id` | `uuid` (PK, default `gen_random_uuid()`) | Primary key |
-| `monto` | `numeric` | Transaction amount |
-| `descripcion` | `text` | Description |
-| `categoria` | `text` | Category |
-| `fecha` | `date` | Transaction date |
-| `tipo` | `text` | `ingreso` or `gasto` |
-| `numero_whatsapp` | `text` | WhatsApp sender ID |
-| `created_at` | `timestamptz` (default `now()`) | Creation timestamp |
+| `id` | `uuid` (PK, default `gen_random_uuid()`) | ID único |
+| `monto` | `numeric` | Monto de la transacción |
+| `descripcion` | `text` | Descripción |
+| `categoria` | `text` | Categoría |
+| `fecha` | `date` | Fecha de la transacción |
+| `tipo` | `text` | `ingreso` o `gasto` |
+| `numero_whatsapp` | `text` | ID de WhatsApp del remitente |
+| `created_at` | `timestamptz` (default `now()`) | Fecha de creación |
 
-Enable Row Level Security (RLS) with a policy that allows all operations for authenticated/anonymous users based on your needs.
+Habilitar Row Level Security (RLS) con una policy que permita las operaciones según lo que necesites.
 
 ---
 
-## 📱 Usage
+## 📱 Uso
 
-### WhatsApp Commands
+### Comandos de WhatsApp
 ```
-💸 "gasté $500 en pizza"           → Expense: comida
-💰 "cobré $50.000 de sueldo"       → Income: sueldo
-💳 "pagué $12.000 de tarjeta"      → Expense: credito
-🚗 "pague $800 de seguro moto"     → Expense: transporte
-📊 "gasté $200 en el cine"         → Expense: entretenimiento
-🏥 "pague $3000 en farmacia"       → Expense: salud
+💸 "gasté $500 en pizza"           → Gasto: comida
+💰 "cobré $50.000 de sueldo"       → Ingreso: sueldo
+💳 "pagué $12.000 de tarjeta"      → Gasto: credito
+🚗 "pague $800 de seguro moto"     → Gasto: transporte
+📊 "gasté $200 en el cine"         → Gasto: entretenimiento
+🏥 "pague $3000 en farmacia"       → Gasto: salud
 ```
 
-### Categories
+### Categorías
 | Ingresos | Gastos |
 |---|---|
 | sueldo, freelance, venta, otros | comida, transporte, entretenimiento, salud, servicios, ropa, credito, otros |
 
 ---
 
-## 🗺️ Roadmap
+## 🗺️ Próximos pasos
 
-- [ ] **Multi-user support** — Personal finances per WhatsApp number
-- [ ] **Budget goals** — Set monthly limits per category
-- [ ] **Recurring transactions** — Auto-detect patterns
-- [ ] **Export to CSV/PDF** — Share reports
-- [ ] **Push notifications** — Daily spending summaries
-- [ ] **Web version** — Companion dashboard
+- [ ] **Soporte multi-usuario** — Finanzas personales por número de WhatsApp
+- [ ] **Metas de presupuesto** — Límites mensuales por categoría
+- [ ] **Transacciones recurrentes** — Detectar patrones automáticamente
+- [ ] **Exportar a CSV/PDF** — Compartir reportes
+- [ ] **Notificaciones push** — Resumen diario de gastos
+- [ ] **Versión web** — Dashboard complementario
 
 ---
 
-## 🧑‍💻 Development
+## 🧑‍💻 Desarrollo
 
 ```bash
-# Bot — development mode with hot reload
+# Bot — modo desarrollo con hot reload
 cd bot-whatsapp && npm run dev
 
-# Mobile — Expo dev server
+# Mobile — servidor de desarrollo Expo
 cd app-mobile && npx expo start
 
-# Edge functions (local Supabase)
+# Edge functions (Supabase local)
 cd bot-whatsapp && npx supabase functions serve
 ```
 
 ---
 
-## 🤝 Contributing
+## 🤝 Contribuir
 
-Contributions are welcome! Feel free to open issues or submit PRs.
+Las contribuciones son bienvenidas. Abrí issues o mandá PRs.
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feat/amazing-feature`)
-3. Commit your changes (`git commit -m 'feat: add amazing feature'`)
-4. Push to the branch (`git push origin feat/amazing-feature`)
-5. Open a Pull Request
+1. Forkeá el repositorio
+2. Creá tu rama (`git checkout -b feat/mi-feature`)
+3. Commiteá tus cambios (`git commit -m 'feat: agrego mi feature'`)
+4. Pusheá la rama (`git push origin feat/mi-feature`)
+5. Abrí un Pull Request
 
 ---
 
-## 📄 License
+## 📄 Licencia
 
-This project is licensed under the MIT License.
+MIT
 
 ---
 
 <div align="center">
   <p>
-    Built with ❤️ using <strong>React Native</strong>, <strong>TypeScript</strong>, and <strong>Supabase</strong>
+    Hecho con ❤️ usando <strong>React Native</strong>, <strong>TypeScript</strong> y <strong>Supabase</strong>
   </p>
   <p>
-    <sub>AI-powered expense tracking — because remembering where your money went shouldn't be a full-time job.</sub>
+    <sub>Control de gastos con IA — porque acordarte de dónde se fue la plata no debería ser un trabajo de tiempo completo.</sub>
   </p>
 </div>
