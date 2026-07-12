@@ -11,7 +11,7 @@
 
 **Controlá tus gastos sin esfuerzo — mandá un mensaje por WhatsApp y listo.**
 
-Mandá *"gasté $500 en pizza"* a tu bot, y la IA lo categoriza y lo guarda automáticamente. Después visualizá todo en una app mobile hermosa.
+Mandá *"gasté $500 en pizza"* a tu bot, y la IA lo categoriza y lo guarda automáticamente. Después visualizá todo en una app mobile.
 
 </div>
 
@@ -261,12 +261,3 @@ Las contribuciones son bienvenidas. Abrí issues o mandá PRs.
 MIT
 
 ---
-
-<div align="center">
-  <p>
-    Hecho con ❤️ usando <strong>React Native</strong>, <strong>TypeScript</strong> y <strong>Supabase</strong>
-  </p>
-  <p>
-    <sub>Control de gastos con IA — porque acordarte de dónde se fue la plata no debería ser un trabajo de tiempo completo.</sub>
-  </p>
-</div>
