@@ -229,32 +229,6 @@ Habilitar Row Level Security (RLS) con una policy que permita las operaciones se
 
 ---
 
-## 🧑‍💻 Desarrollo
-
-```bash
-# Bot — modo desarrollo con hot reload
-cd bot-whatsapp && npm run dev
-
-# Mobile — servidor de desarrollo Expo
-cd app-mobile && npx expo start
-
-# Edge functions (Supabase local)
-cd bot-whatsapp && npx supabase functions serve
-```
-
----
-
-## 🤝 Contribuir
-
-Las contribuciones son bienvenidas. Abrí issues o mandá PRs.
-
-1. Forkeá el repositorio
-2. Creá tu rama (`git checkout -b feat/mi-feature`)
-3. Commiteá tus cambios (`git commit -m 'feat: agrego mi feature'`)
-4. Pusheá la rama (`git push origin feat/mi-feature`)
-5. Abrí un Pull Request
-
----
 
 ## 📄 Licencia
 
