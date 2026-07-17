@@ -119,16 +119,11 @@ Mandá *"gasté $500 en pizza"* a tu bot, y la IA lo categoriza y lo guarda auto
 ---
 
 ## 📸 Capturas de pantalla
-<img width="576" height="1174" alt="imagen" src="https://github.com/user-attachments/assets/82f1baea-7092-4643-8597-4856d98243b8" />
-<img width="573" height="1174" alt="imagen" src="https://github.com/user-attachments/assets/1c14db47-6df8-4450-939e-0c3845b4a84a" />
-<img width="564" height="1168" alt="imagen" src="https://github.com/user-attachments/assets/53c130fd-741e-466f-a535-57415674b964" />
-<img width="573" height="1173" alt="imagen" src="https://github.com/user-attachments/assets/062fd123-794f-4284-9f29-a6ddbdf07fdc" />
 
-
-
-*(Agregar screenshots — pantalla principal, reportes con gráfico de torta, conversación de WhatsApp)*
-
-> **Tip:** Sacale capturas en modo claro y oscuro para mostrar el theme.
+|                                                                    |                                                                    |                                                                    |
+| :----------------------------------------------------------------: | :----------------------------------------------------------------: | :----------------------------------------------------------------: |
+| <img width="250" alt="imagen" src="https://github.com/user-attachments/assets/82f1baea-7092-4643-8597-4856d98243b8" /> | <img width="250"  alt="imagen" src="https://github.com/user-attachments/assets/1c14db47-6df8-4450-939e-0c3845b4a84a" /> | <img width="250"  alt="imagen" src="https://github.com/user-attachments/assets/53c130fd-741e-466f-a535-57415674b964" /> |
+| <img width="250"  alt="imagen" src="https://github.com/user-attachments/assets/062fd123-794f-4284-9f29-a6ddbdf07fdc" />|
 
 ---
 
