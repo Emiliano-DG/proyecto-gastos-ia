@@ -1,18 +1,23 @@
-import { BalanceCard } from '@/components/BalanceCard'
-import { Loading } from '@/components/Loading'
-import { ThemeView } from '@/components/ThemeView'
-import TransaccionCard from '@/components/TransaccionCard'
-import { useTheme } from '@/hooks/useThemeColor'
-import { useTransaccionCompleta } from '@/hooks/useTransaccionCompleta'
-import { useDateStore } from '@/stores/useDateStore'
-import { calculateBalance } from '@/utils/finance'
-import { FlatList, Text, TouchableOpacity, View } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { BalanceCard } from "@/components/BalanceCard";
+import { FloatingButton } from "@/components/FloatingButton";
+import { Loading } from "@/components/Loading";
+import { ThemeView } from "@/components/ThemeView";
+import TransaccionCard from "@/components/TransaccionCard";
+import { TransaccionModal } from "@/components/TransaccionModal";
+import { useCrearTransaccion } from "@/hooks/useCrearTransaccion";
+import { useTheme } from "@/hooks/useThemeColor";
+import { useTransaccionCompleta } from "@/hooks/useTransaccionCompleta";
+import { useDateStore } from "@/stores/useDateStore";
+import { calculateBalance } from "@/utils/finance";
+import { useState } from "react";
+import { Alert, FlatList, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
-  const theme = useTheme()
+  const theme = useTheme();
+  const [modalVisible, setModalVisible] = useState(false);
 
-  const selectedMonth = useDateStore((state) => state.selectedMonth)
+  const selectedMonth = useDateStore((state) => state.selectedMonth);
   const {
     data: transaccion,
     isLoading: cargando,
@@ -21,16 +26,38 @@ export default function HomeScreen() {
   } = useTransaccionCompleta(
     selectedMonth.getMonth(),
     selectedMonth.getFullYear(),
-  )
+  );
 
   //onst { data: balance, isLoading: cargandoBalance } = useBalance()
 
   const { ingresos, gastos, TransaccionBalance } = calculateBalance(
     transaccion ?? [],
-  )
+  );
+
+  const crearTransaccion = useCrearTransaccion(
+    selectedMonth.getMonth(),
+    selectedMonth.getFullYear(),
+  );
+
+  const handleGuardar = (data: {
+    monto: number;
+    categoria: string;
+    fecha: string;
+    descripcion: string;
+    tipo: "ingreso" | "gasto";
+  }) => {
+    crearTransaccion.mutate(data, {
+      onSuccess: () => {
+        setModalVisible(false);
+      },
+      onError: (err) => {
+        Alert.alert("Error", err.message);
+      },
+    });
+  };
 
   // Mostrar indicador de carga mientras se obtienen los datos
-  if (cargando) return <Loading />
+  if (cargando) return <Loading />;
   // 2. SI HAY ERROR: Mostramos una interfaz de error con opción a reintentar
   if (error) {
     return (
@@ -43,7 +70,7 @@ export default function HomeScreen() {
           Ups, algo salió mal
         </Text>
         <Text className="text-gray-400 text-sm text-center mb-6">
-          {error?.message || 'Error inesperado'}
+          {error?.message || "Error inesperado"}
         </Text>
 
         {/* Botón para volver a ejecutar cargarDatos() */}
@@ -54,12 +81,12 @@ export default function HomeScreen() {
           <Text className="text-[#13131f] font-bold">Volver a intentar</Text>
         </TouchableOpacity>
       </View>
-    )
+    );
   }
 
   return (
     <ThemeView className="flex-1">
-      <SafeAreaView className="flex-1" edges={['top']}>
+      <SafeAreaView className="flex-1" edges={["top"]}>
         <FlatList
           data={transaccion}
           keyExtractor={(item) => item.id}
@@ -79,6 +106,15 @@ export default function HomeScreen() {
           }
         />
       </SafeAreaView>
+
+      <FloatingButton onPress={() => setModalVisible(true)} />
+
+      <TransaccionModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        onSave={handleGuardar}
+        isPending={crearTransaccion.isPending}
+      />
     </ThemeView>
-  )
+  );
 }

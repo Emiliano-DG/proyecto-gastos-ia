@@ -44,3 +44,5 @@ yarn-error.*
 # IA Context / Local tooling
 .mobiai/
 .vercel
+# Local Pi runtime state
+.atl/
